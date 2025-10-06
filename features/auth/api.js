@@ -1,9 +1,10 @@
-// features/auth/api.js
+// All auth-related API calls for clarity.
 import { api } from '@/lib/api';
 
-// Login with email/password -> backend returns {status, data:{access_token}, message}
+// Login returns {status, message, data: { access_token }}
 export const loginApi = (email, password) =>
   api('/auth/login', { method: 'POST', body: { email, password } });
 
-// Get current user profile -> backend returns {status, data:{ id, role: 'admin'|'artist', ...}}
-export const me = () => api('/auth/me');
+// Profile returns {status, data: { id, role: 'admin'|'agency'|... }}
+// We'll call it "profile" because you prefer that term.
+export const getProfile = () => api('/auth/profile');

@@ -1,0 +1,36 @@
+/* /app/globals.css or /styles/theme.css */
+
+/* Book-Ink dark theme */
+:root {
+  --ink-green: #00ff66;
+  --ink-bg: #111418;
+  --ink-surface: #181c20;
+  --ink-text: #e4e8ec;
+  --ink-text-muted: #9fa8b2;
+}
+
+/* Override Bootstrap colors */
+.btn-primary {
+  background-color: var(--ink-green);
+  border-color: var(--ink-green);
+}
+.btn-primary:hover {
+  background-color: #00e05d;
+  border-color: #00e05d;
+}
+
+body {
+  background-color: var(--ink-bg);
+  color: var(--ink-text);
+}
+
+/* Cards, forms, etc. */
+.card {
+  background-color: var(--ink-surface);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+input.form-control, select.form-control {
+  background-color: var(--ink-surface);
+  color: var(--ink-text);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
