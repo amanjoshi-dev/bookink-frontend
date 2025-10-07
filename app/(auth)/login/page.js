@@ -1,8 +1,10 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { loginApi, getProfile } from '@/features/auth/api';
 import { useAuth } from '@/context/AuthContext';
+import { asset } from '@/lib/config';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -14,52 +16,34 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
 
   async function onSubmit(e) {
-    e.preventDefault();             // stop native form refresh
+    e.preventDefault();
     setLoading(true);
     setMsg('');
 
-    // 1) hit backend for token (+ maybe profile)
     const r = await loginApi(email, password);
-
     if (!r?.status) {
       setMsg(r?.message || 'Login failed.');
       setLoading(false);
       return;
     }
 
-    // 2) extract token (support both shapes)
-    //    - some backends send it inside r.data.access_token
-    //    - yours (per screenshot) also puts it at r.access_token
-    const token =
-      r?.data?.access_token ??
-      r?.access_token ??
-      null;
-
+    const token = r?.data?.access_token ?? r?.access_token ?? null;
     if (!token) {
       setMsg('Login failed: no token received.');
       setLoading(false);
       return;
     }
 
-    // 3) if backend already sent profile in r.data, use it
-    //    (your console shows { data: { id, role, ... } })
-    const profileFromLogin =
-      r?.data && r?.data.role ? r.data : null;
-
-    // 4) save token immediately so subsequent calls have Authorization
-    //    (AuthContext.login stores token in localStorage and sets user if provided)
+    const profileFromLogin = r?.data && r?.data.role ? r.data : null;
     login(token, profileFromLogin);
 
-    // 5) if we didn't get a profile with the login response, fetch it now
     let profile = profileFromLogin;
     if (!profile) {
       const p = await getProfile();
       profile = p?.status ? p.data : null;
-      // update context with the real profile
       login(token, profile);
     }
 
-    // 6) route by role (client-side; NO full page reload)
     const role = profile?.role;
     if (role === 'admin') router.replace('/admin');
     else if (role === 'agency') router.replace('/agency');
@@ -69,27 +53,71 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="container" style={{ maxWidth: 420, marginTop: 60 }}>
-      <h3 className="mb-3">Sign in</h3>
-      <form onSubmit={onSubmit}>
-        <input
-          className="form-control mb-2"
-          placeholder="Email"
-          value={email}
-          onChange={(e)=>setEmail(e.target.value)}
-        />
-        <input
-          className="form-control mb-3"
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e)=>setPassword(e.target.value)}
-        />
-        <button className="btn btn-primary w-100" disabled={loading}>
-          {loading ? 'Signing in…' : 'Login'}
-        </button>
-      </form>
-      {msg && <div className="alert alert-info mt-3">{msg}</div>}
+    <div
+      className="login-page d-flex align-items-center justify-content-center"
+      style={{
+        backgroundImage: `url(${asset('/images/login-front.jpg')})`,
+      }}
+    >
+      {/* dark overlay to dim the background image */}
+      <div className="login-overlay" />
+
+      <div className="login-card shadow-lg">
+        <div className="text-center mb-3">
+          <Image
+            src={asset('/images/logo-dark.png')}
+            alt="Logo"
+            width={200}
+            height={150}
+            priority
+          />
+        </div>
+
+        <h2 className="login-title text-center mb-1">Login</h2>
+        <p className="login-subtitle text-center mb-4">Sign in to your account</p>
+
+        <form onSubmit={onSubmit}>
+          <div className="mb-3">
+            <div className="input-group">
+              <span className="input-group-text">
+                <i className="bi bi-person" aria-hidden="true" />
+              </span>
+              <input
+                type="email"
+                className="form-control"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                autoComplete="username"
+                required
+              />
+            </div>
+          </div>
+
+          <div className="mb-4">
+            <div className="input-group">
+              <span className="input-group-text">
+                <i className="bi bi-lock" aria-hidden="true" />
+              </span>
+              <input
+                type="password"
+                className="form-control"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                autoComplete="current-password"
+                required
+              />
+            </div>
+          </div>
+
+          <button className="btn btn-success w-100 login-btn" disabled={loading}>
+            {loading ? 'Signing in…' : 'Login'}
+          </button>
+        </form>
+
+        {msg && <div className="alert alert-danger mt-3 py-2 mb-0">{msg}</div>}
+      </div>
     </div>
   );
 }

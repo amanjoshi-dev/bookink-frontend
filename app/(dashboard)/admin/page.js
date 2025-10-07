@@ -1,41 +1,64 @@
 'use client';
-import { useAuth } from '@/context/AuthContext';
-import { useRouter } from 'next/navigation';
+/**
+ * Admin home page.
+ * NOTE: The chrome (Topbar + Sidebar + Footer) is provided by
+ * app/(dashboard)/admin/layout.js via <DashboardShell/>.
+ * Here we only render the page content, protected by RequireRole.
+ */
 import { RequireRole } from '@/lib/guard';
+import Link from 'next/link';
 
 export default function AdminHome() {
-  const { user, ready, logout } = useAuth();
-  const router = useRouter();
-
-  function handleLogout() {
-    logout();                // clears token + user in context
-    router.replace('/login'); // soft navigation, no reload
-  }
-
-  // 1) Don't render the page until AuthProvider finished checking the session
-  if (!ready) {
-    return <div className="container mt-5">Loading…</div>;
-  }
-
-  // 2) Wrap in role guard (redirects if not admin)
   return (
     <RequireRole role="admin">
-      <div className="container mt-4">
-        <div className="d-flex justify-content-between align-items-center">
-          {/* 3) Safe read of user name with fallback */}
-          <h4>Hello {user?.name || 'Admin'}, Admin Dashboard</h4>
-
-          <button
-            type="button"
-            className="btn btn-outline-danger"
-            onClick={handleLogout}
-          >
-            Logout
-          </button>
+      <div className="container-fluid">
+        <div className="d-flex justify-content-between align-items-center mb-3">
+          <h4 className="mb-0">Hello Super Admin, Admin Dashboard</h4>
         </div>
-
         <hr />
-        <p>Next: add Taxonomies here.</p>
+
+        {/* Quick actions/cards */}
+        <div className="row g-3">
+          <div className="col-md-3">
+            <div className="card bg-dark text-light h-100">
+              <div className="card-body">
+                <h5 className="card-title">Taxonomies</h5>
+                <p className="text-secondary small mb-3">Manage Styles, Languages, Inks, Placements</p>
+                <Link href="/admin/taxonomies" className="btn btn-success w-100">Open</Link>
+              </div>
+            </div>
+          </div>
+
+          <div className="col-md-3">
+            <div className="card bg-dark text-light h-100">
+              <div className="card-body">
+                <h5 className="card-title">Agencies</h5>
+                <p className="text-secondary small mb-3">Review & manage agencies</p>
+                <Link href="/admin/agencies" className="btn btn-outline-light w-100">Open</Link>
+              </div>
+            </div>
+          </div>
+
+          <div className="col-md-3">
+            <div className="card bg-dark text-light h-100">
+              <div className="card-body">
+                <h5 className="card-title">Forum</h5>
+                <p className="text-secondary small mb-3">Moderate posts & comments</p>
+                <Link href="/admin/forum" className="btn btn-outline-light w-100">Open</Link>
+              </div>
+            </div>
+          </div>
+
+          <div className="col-md-3">
+            <div className="card bg-dark text-light h-100">
+              <div className="card-body">
+                <h5 className="card-title">Settings</h5>
+                <p className="text-secondary small mb-3">Platform configuration</p>
+                <Link href="/admin/settings" className="btn btn-outline-light w-100">Open</Link>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </RequireRole>
   );

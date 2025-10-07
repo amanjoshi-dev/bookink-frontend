@@ -1,13 +1,23 @@
-/* /app/globals.css or /styles/theme.css */
+/* =============================== */
+/* Book-Ink dark theme + Dashboard */
+/* =============================== */
 
-/* Book-Ink dark theme */
+/* Brand and surface colors */
 :root {
   --ink-green: #00ff66;
   --ink-bg: #111418;
   --ink-surface: #181c20;
   --ink-text: #e4e8ec;
   --ink-text-muted: #9fa8b2;
+
+  /* === Layout constants (NEW) === */
+  --topbar-h: 56px;   /* height of navbar */
+  --sidebar-w: 260px; /* width of sidebar */
 }
+
+/* Prevent accidental horizontal scroll on the PAGE.
+   (If content needs horizontal scroll, we'll show it INSIDE .app-main.) */
+html, body { max-width: 100%; overflow-x: hidden; }
 
 /* Override Bootstrap colors */
 .btn-primary {
@@ -29,8 +39,161 @@ body {
   background-color: var(--ink-surface);
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
-input.form-control, select.form-control {
-  background-color: var(--ink-surface);
-  color: var(--ink-text);
+input.form-control,
+select.form-control {
   border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ====================== */
+/* Dashboard shell layout */
+/* ====================== */
+
+/* Topbar: stays on top, fixed height (NEW) */
+.app-topbar {
+  height: var(--topbar-h);
+  position: sticky;        /* sticks to top while scrolling */
+  top: 0;
+  z-index: 1040;           /* above sidebar */
+}
+
+/* Sidebar: fixed on the left, but starts BELOW the topbar (NEW) */
+.app-sidebar {
+  width: var(--sidebar-w);
+  top: var(--topbar-h) !important;              /* ensure it never overlaps the topbar */
+  height: calc(100vh - var(--topbar-h));
+  z-index: 1030;
+}
+
+/* Wrapper classes control collapsed/expanded state (NEW) */
+.dashboard.with-sidebar .app-sidebar {
+  transform: translateX(0);
+  transition: transform .2s ease;
+}
+.dashboard.sidebar-collapsed .app-sidebar {
+  transform: translateX(-100%);
+  transition: transform .2s ease;
+}
+
+/* On lg+ we push the main content right when sidebar is visible (NEW) */
+/* @media (min-width: 992px) {
+  .dashboard.with-sidebar main.container-fluid { margin-left: var(--sidebar-w); }
+} */
+
+/* Mobile slide helpers (keep existing class names) */
+.-translate-x-100 {
+  transform: translateX(-100%);
+  transition: transform .2s ease;
+}
+.translate-x-0 {
+  transform: translateX(0);
+  transition: transform .2s ease;
+}
+
+/* ===== Main area helpers (yours, kept) ===== */
+
+/* Main area: vertical padding + allow horizontal scrolling if needed */
+.app-main {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  /* If something inside gets wider than the page,
+     show a scrollbar INSIDE the main area */
+  overflow-x: auto;
+}
+
+/* Center content and cap width for readability */
+.app-main-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: calc(100% - 2rem);
+  padding: 1rem;
+  min-width: 0;
+}
+
+/* ===================== */
+/* Tiny polish (NEW)     */
+/* ===================== */
+.btn.btn-outline-light.btn-sm:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+/* ===================== */
+/* LOGIN PAGE STYLING    */
+/* ===================== */
+/* PAGE WRAPPER */
+.login-page {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* subtle dark overlay so the white card pops */
+.login-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+/* CARD */
+.login-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 540px;             /* bigger, like the senior's */
+  background: #fff;
+  border-radius: 16px;
+  padding: 36px 36px 32px;
+  border: 1px solid #e9ecef;
+}
+
+/* TITLES */
+.login-title {
+  font-weight: 700;
+  letter-spacing: -0.2px;
+  color: #111418;
+}
+.login-subtitle {
+  color: #6c757d;
+  font-size: 0.95rem;
+}
+
+/* INPUTS (Playbook-ish) */
+.login-card .input-group-text {
+  background: #f3f5f7;
+  border: 1px solid #dfe3e8;
+  border-right: 0;
+  border-radius: 10px 0 0 10px;
+}
+
+.login-card .form-control {
+  height: 48px;
+  border: 1px solid #dfe3e8;
+  border-left: 0;
+  border-radius: 0 10px 10px 0;
+  font-size: 15px;
+}
+
+.login-card .form-control:focus {
+  border-color: #00b060;
+  box-shadow: 0 0 0 0.15rem rgba(0, 176, 96, 0.15);
+}
+
+.login-btn {
+  height: 46px;
+  border-radius: 10px;
+  font-weight: 600;
+  background-color: #00b060;
+  border-color: #00b060;
+}
+.login-btn:hover {
+  background-color: #00a152;
+  border-color: #00a152;
+}
+
+/* tweak alert look */
+.login-card .alert {
+  border-radius: 8px;
+  font-size: 0.9rem;
 }
