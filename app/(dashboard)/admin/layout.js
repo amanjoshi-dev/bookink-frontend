@@ -1,32 +1,51 @@
 /**
- * Admin layout: defines admin menu and wraps every /admin/* page in the shell.
- * THIS FILE makes the shell appear automatically on all admin pages.
+ * Admin layout: grouped nav like Playbook (Dashboard / Masters / App / System)
  */
 import DashboardShell from '@/components/layout/DashboardShell';
 
-const adminNav = [
-  { label: 'Home', href: '/admin', icon: 'bi-speedometer2' },
+const adminNavGroups = [
   {
-    label: 'Taxonomies',
-    href: '/admin/taxonomies',
-    icon: 'bi-tags',
-    startsWith: '/admin/taxonomies',
-    // NEW: sub menu
-    children: [
-      { label: 'Styles', href: '/admin/taxonomies/styles', icon: 'bi-image' },
-      { label: 'Languages', href: '/admin/taxonomies/languages', icon: 'bi-translate' },
-      { label: 'Ink Types', href: '/admin/taxonomies/inks', icon: 'bi-droplet' },
-      { label: 'Placements', href: '/admin/taxonomies/placements', icon: 'bi-grid' },
+    title: 'Dashboard',
+    items: [
+      { label: 'Home', href: '/admin', icon: 'bi-speedometer2' },
     ],
   },
-  { label: 'Agencies', href: '/admin/agencies', icon: 'bi-buildings' },
-  { label: 'Forum', href: '/admin/forum', icon: 'bi-chat-square-text' },
-  { label: 'Settings', href: '/admin/settings', icon: 'bi-gear' },
+  {
+    title: 'Masters',
+    items: [
+      {
+        label: 'Taxonomies',
+        href: '/admin/taxonomies',
+        icon: 'bi-tags',
+        startsWith: '/admin/taxonomies',
+        // submenu
+        children: [
+          { label: 'Styles', href: '/admin/taxonomies/styles', icon: 'bi-image' },
+          { label: 'Languages', href: '/admin/taxonomies/languages', icon: 'bi-translate' },
+          { label: 'Ink Types', href: '/admin/taxonomies/inks', icon: 'bi-droplet' },
+          { label: 'Placements', href: '/admin/taxonomies/placements', icon: 'bi-grid' },
+        ],
+      },
+    ],
+  },
+  {
+    title: 'App',
+    items: [
+      { label: 'Agencies', href: '/admin/agencies', icon: 'bi-buildings' },
+      { label: 'Forum', href: '/admin/forum', icon: 'bi-chat-square-text' },
+    ],
+  },
+  {
+    title: 'System',
+    items: [
+      { label: 'Settings', href: '/admin/settings', icon: 'bi-gear' },
+    ],
+  },
 ];
 
 export default function AdminLayout({ children }) {
   return (
-    <DashboardShell nav={adminNav} sidebarTitle="Admin Menu">
+    <DashboardShell navGroups={adminNavGroups} sidebarTitle="Admin Menu">
       {children}
     </DashboardShell>
   );

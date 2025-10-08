@@ -197,3 +197,6 @@ select.form-control {
   border-radius: 8px;
   font-size: 0.9rem;
 }
+
+/* Nav Style */
+.nav .nav-link.active { border-radius: .5rem; }
